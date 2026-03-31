@@ -1,0 +1,52 @@
+spring:
+  application:
+    name: tablemint-backend
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/tablemint
+    username: ${DB_USERNAME:vedant13}
+    password: ${DB_PASSWORD:vedant13@}
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 2
+      connection-timeout: 30000
+      idle-timeout: 600000
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+        default_schema: public
+    open-in-view: false
+
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+
+  security:
+    user:
+      name: ignored
+      password: ignored
+
+server:
+  port: 8080
+  servlet:
+    context-path: /api
+
+jwt:
+  secret: ${JWT_SECRET:tablemint-super-secret-key-minimum-32-characters-long}
+  expiration-ms: 86400000
+  refresh-expiration-ms: 604800000
+
+logging:
+  level:
+    com.tablemint: DEBUG
+    org.springframework.security: INFO
+    org.hibernate.SQL: INFO
+  pattern:
+    console: "%d{HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
