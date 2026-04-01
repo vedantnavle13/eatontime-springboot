@@ -36,8 +36,17 @@ public class SecurityConfig {
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
+                        // Public auth endpoints
                         .requestMatchers(HttpMethod.POST, "/auth/register", "/auth/login").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/restaurants", "/restaurants/**", "/reviews/restaurant/**").permitAll()
+                        // Public read endpoints
+                        .requestMatchers(HttpMethod.GET,
+                                "/restaurants",
+                                "/restaurants/**",
+                                "/reviews/restaurant/**",
+                                "/restaurants/*/tables",
+                                "/restaurants/*/hours"
+                        ).permitAll()
+                        // Everything else requires a valid JWT
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
@@ -53,7 +62,6 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        // Hardcoded for dev — no yaml dependency
         config.setAllowedOrigins(List.of(
                 "http://localhost:3000",
                 "http://localhost:5173"
